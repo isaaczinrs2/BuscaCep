@@ -1,144 +1,238 @@
-window.onload = function() {
-    // Função para limpar os campos de endereço
-    function limpa_formulário_cep() {
-        document.getElementById('rua').value = "";
-        document.getElementById('bairro').value = "";
-        document.getElementById('cid').value = "";
-        document.getElementById('est').value = "";
-        document.getElementById('resultado-cep').textContent = "CEP: "; // Limpa o campo de resultado
+document.addEventListener('DOMContentLoaded', function() {
+    // Elementos do DOM
+    const cepInput = document.getElementById('CEP');
+    const ruaInput = document.getElementById('rua');
+    const bairroInput = document.getElementById('bairro');
+    const cidadeInput = document.getElementById('cid');
+    const estadoInput = document.getElementById('est');
+    const resultadoCep = document.getElementById('resultado-cep');
+    const btnBuscarCep = document.getElementById('env');
+    const btnBuscarEndereco = document.getElementById('env-endereco');
+    const btnOpenMaps = document.getElementById('open-maps');
+    const btnClearHistory = document.getElementById('clear-history');
+    const historicoList = document.getElementById('historico-list');
+
+    // Máscara para o CEP
+    cepInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length > 5) {
+            value = value.substring(0, 5) + '-' + value.substring(5, 8);
+        }
+        e.target.value = value;
+    });
+
+    // Limpar formulário
+    function limparFormulario() {
+        ruaInput.value = '';
+        bairroInput.value = '';
+        cidadeInput.value = '';
+        estadoInput.value = '';
+        resultadoCep.textContent = 'CEP não informado';
+        btnOpenMaps.disabled = true;
     }
 
-    // Função para adicionar CEP ao histórico
-    function adicionarHistorico(cep, endereco) {
-        const historicoList = document.getElementById('historico-list');
+    // Formatador de endereço para exibição
+    function formatarEndereco(data) {
+        let endereco = '';
+        if (data.logradouro) endereco += data.logradouro;
+        if (data.bairro) endereco += endereco ? ', ' + data.bairro : data.bairro;
+        if (data.localidade) endereco += endereco ? ' - ' + data.localidade : data.localidade;
+        if (data.uf) endereco += endereco ? '/' + data.uf : data.uf;
+        return endereco;
+    }
 
-        // Verifica se o CEP já está presente no histórico
-        const existingItems = Array.from(historicoList.getElementsByTagName('li'));
-        if (existingItems.some(item => item.textContent.includes(cep))) {
-            return; // Se já estiver, não adiciona
+    // Adicionar ao histórico
+    function adicionarAoHistorico(cep, data) {
+        // Verificar se já existe no histórico
+        const items = historicoList.querySelectorAll('li');
+        for (let item of items) {
+            if (item.dataset.cep === cep) {
+                return; // Já está no histórico
+            }
         }
 
         const li = document.createElement('li');
-        li.textContent = `CEP - ${cep}`;
-        // Adiciona os dados do endereço ao elemento para reutilizar no clique
-        li.dataset.endereco = JSON.stringify(endereco);
+        li.dataset.cep = cep;
+        li.dataset.endereco = JSON.stringify(data);
+        
+        li.innerHTML = `
+            <div class="history-item-content">
+                <strong>CEP:</strong> ${cep} - ${formatarEndereco(data)}
+            </div>
+            <div class="history-item-actions">
+                <button class="btn-view" title="Ver no mapa">
+                    <i class="fas fa-map-marked-alt"></i>
+                </button>
+                <button class="btn-remove" title="Remover">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `;
 
-        // Evento de clique para preencher o CEP e os campos de endereço
-        li.addEventListener('click', function() {
-            document.getElementById('CEP').value = cep;
-            const data = JSON.parse(li.dataset.endereco);
-            document.getElementById('rua').value = data.logradouro;
-            document.getElementById('bairro').value = data.bairro;
-            document.getElementById('cid').value = data.localidade;
-            document.getElementById('est').value = data.uf;
-            document.getElementById('resultado-cep').textContent = `CEP: ${cep}`;
+        // Adiciona eventos aos botões
+        li.querySelector('.btn-view').addEventListener('click', function(e) {
+            e.stopPropagation();
+            abrirNoMaps(cep, data);
         });
 
-        historicoList.appendChild(li);
+        li.querySelector('.btn-remove').addEventListener('click', function(e) {
+            e.stopPropagation();
+            li.remove();
+            salvarHistorico();
+        });
+
+        // Evento de clique no item
+        li.addEventListener('click', function() {
+            preencherFormulario(cep, data);
+        });
+
+        historicoList.prepend(li);
+        salvarHistorico();
     }
 
-    // Função para pesquisar o CEP
-    function pesquisacep() {
-        var valor = document.getElementById('CEP').value;
-        var cep = valor.replace(/\D/g, '');
-
-        if (cep != "") {
-            var validacep = /^[0-9]{8}$/;
-
-            if(validacep.test(cep)) {
-                document.getElementById('rua').value = "...";
-                document.getElementById('bairro').value = "...";
-                document.getElementById('cid').value = "...";
-                document.getElementById('est').value = "...";
-                document.getElementById('resultado-cep').textContent = "CEP: ...";
-
-                fetch(`https://viacep.com.br/ws/${cep}/json/`)
-                .then(response => response.json())
-                .then(data => {
-                    if (!("erro" in data)) {
-                        document.getElementById('rua').value = data.logradouro;
-                        document.getElementById('bairro').value = data.bairro;
-                        document.getElementById('cid').value = data.localidade;
-                        document.getElementById('est').value = data.uf;
-                        document.getElementById('resultado-cep').textContent = `CEP: ${cep}`; // Exibe o CEP encontrado
-                        document.getElementById('CEP').value = cep; // Atualiza o input "CEP"
-
-                        // Adiciona o CEP ao histórico com os dados de endereço
-                        adicionarHistorico(cep, data);
-                    } else {
-                        limpa_formulário_cep();
-                        alert("CEP não encontrado.");
-                    }
-                })
-                .catch(error => {
-                    console.error("Erro ao buscar o CEP:", error);
-                });
-            } else {
-                limpa_formulário_cep();
-                alert("Formato de CEP inválido.");
-            }
-        } else {
-            limpa_formulário_cep();
-        }
-    }
-
-    // Função para remover acentos e caracteres especiais
-    function removeAcentos(text) {
-        return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-    }
-
-    // Função para formatar texto para URL (substituir espaços por %20)
-    function formataParaUrl(text) {
-        return text.trim().replace(/ /g, "%20");
-    }
-
-    // Função para buscar o CEP com base no endereço (estado, cidade e rua)
-    function buscaCepPorEndereco() {
-        var rua = removeAcentos(document.getElementById('rua').value);
-        var cidade = removeAcentos(document.getElementById('cid').value);
-        var estado = document.getElementById('est').value;
-
-        rua = formataParaUrl(rua);
-        cidade = formataParaUrl(cidade);
-
-        if (rua && cidade && estado) {
-            var url = `https://viacep.com.br/ws/${estado}/${cidade}/${rua}/json/`;
-            console.log("URL gerada:", url);
-
-            fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                if (data.length > 0) {
-                    document.getElementById('CEP').value = data[0].cep;
-                    document.getElementById('rua').value = data[0].logradouro;
-                    document.getElementById('bairro').value = data[0].bairro;
-                    document.getElementById('cid').value = data[0].localidade;
-                    document.getElementById('est').value = data[0].uf;
-                    document.getElementById('resultado-cep').textContent = `CEP: ${data[0].cep}`;
-
-                    // Adiciona ao histórico o CEP encontrado com os dados de endereço
-                    adicionarHistorico(data[0].cep, data[0]);
-                } else {
-                    alert("Endereço não encontrado.");
-                }
-            })
-            .catch(error => {
-                console.error("Erro ao buscar o CEP:", error);
+    // Salvar histórico no localStorage
+    function salvarHistorico() {
+        const items = historicoList.querySelectorAll('li');
+        const historico = [];
+        
+        items.forEach(item => {
+            historico.push({
+                cep: item.dataset.cep,
+                endereco: item.dataset.endereco
             });
-        } else {
-            alert("Preencha todos os campos do endereço.");
+        });
+        
+        localStorage.setItem('buscaCepHistorico', JSON.stringify(historico));
+    }
+
+    // Carregar histórico do localStorage
+    function carregarHistorico() {
+        const historico = JSON.parse(localStorage.getItem('buscaCepHistorico')) || [];
+        
+        historico.forEach(item => {
+            const data = JSON.parse(item.endereco);
+            adicionarAoHistorico(item.cep, data);
+        });
+    }
+
+    // Preencher formulário com dados
+    function preencherFormulario(cep, data) {
+        cepInput.value = cep;
+        ruaInput.value = data.logradouro || '';
+        bairroInput.value = data.bairro || '';
+        cidadeInput.value = data.localidade || '';
+        estadoInput.value = data.uf || '';
+        resultadoCep.textContent = `CEP: ${cep}`;
+        btnOpenMaps.disabled = false;
+        btnOpenMaps.dataset.cep = cep;
+        btnOpenMaps.dataset.endereco = JSON.stringify(data);
+    }
+
+    // Buscar CEP
+    async function buscarCep() {
+        const cep = cepInput.value.replace(/\D/g, '');
+        
+        if (cep.length !== 8) {
+            alert('CEP deve conter 8 dígitos');
+            return;
+        }
+
+        try {
+            btnBuscarCep.disabled = true;
+            btnBuscarCep.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Buscando...';
+            
+            const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+            const data = await response.json();
+            
+            if (data.erro) {
+                throw new Error('CEP não encontrado');
+            }
+            
+            preencherFormulario(cep, data);
+            adicionarAoHistorico(cep, data);
+        } catch (error) {
+            limparFormulario();
+            alert(error.message || 'Erro ao buscar CEP');
+        } finally {
+            btnBuscarCep.disabled = false;
+            btnBuscarCep.innerHTML = '<i class="fas fa-search"></i> Buscar';
         }
     }
 
-    // Vincular o botão "Enviar" de pesquisa de CEP
-    document.getElementById('env').addEventListener('click', function(event) {
-        event.preventDefault();  // Previne o comportamento padrão
-        pesquisacep();           // Chama a função de busca por CEP
+    // Buscar por endereço
+    async function buscarPorEndereco() {
+        const rua = ruaInput.value.trim();
+        const cidade = cidadeInput.value.trim();
+        const estado = estadoInput.value.trim().toUpperCase();
+        
+        if (!rua || !cidade || !estado || estado.length !== 2) {
+            alert('Preencha todos os campos do endereço corretamente (Estado deve ser a sigla com 2 letras)');
+            return;
+        }
+        
+        try {
+            btnBuscarEndereco.disabled = true;
+            btnBuscarEndereco.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Buscando...';
+            
+            const response = await fetch(`https://viacep.com.br/ws/${estado}/${cidade}/${rua}/json/`);
+            const data = await response.json();
+            
+            if (data.erro || data.length === 0) {
+                throw new Error('Endereço não encontrado');
+            }
+            
+            // Pegamos o primeiro resultado
+            const primeiroResultado = data[0];
+            const cep = primeiroResultado.cep.replace(/\D/g, '');
+            
+            preencherFormulario(cep, primeiroResultado);
+            adicionarAoHistorico(cep, primeiroResultado);
+        } catch (error) {
+            alert(error.message || 'Erro ao buscar endereço');
+        } finally {
+            btnBuscarEndereco.disabled = false;
+            btnBuscarEndereco.innerHTML = '<i class="fas fa-search-location"></i> Buscar CEP';
+        }
+    }
+
+    // Abrir no Google Maps
+    function abrirNoMaps(cep, data) {
+        const endereco = `${data.logradouro || ''}, ${data.bairro || ''}, ${data.localidade || ''}, ${data.uf || ''}, Brasil`.replace(/,\s*,/g, ',').trim();
+        const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(endereco)}`;
+        window.open(url, '_blank');
+    }
+
+    // Event Listeners
+    btnBuscarCep.addEventListener('click', function(e) {
+        e.preventDefault();
+        buscarCep();
     });
 
-    // Vincular o botão "Enviar" de pesquisa de endereço
-    document.getElementById('env-endereco').addEventListener('click', function(event) {
-        event.preventDefault();  // Previne o comportamento padrão
-        buscaCepPorEndereco();   // Chama a função de busca por endereço
+    btnBuscarEndereco.addEventListener('click', function(e) {
+        e.preventDefault();
+        buscarPorEndereco();
     });
-};
+
+    btnOpenMaps.addEventListener('click', function() {
+        const cep = btnOpenMaps.dataset.cep;
+        const data = JSON.parse(btnOpenMaps.dataset.endereco || '{}');
+        abrirNoMaps(cep, data);
+    });
+
+    btnClearHistory.addEventListener('click', function() {
+        if (confirm('Tem certeza que deseja limpar todo o histórico?')) {
+            historicoList.innerHTML = '';
+            localStorage.removeItem('buscaCepHistorico');
+        }
+    });
+
+    // Permitir busca com Enter
+    cepInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            buscarCep();
+        }
+    });
+
+    // Carregar histórico ao iniciar
+    carregarHistorico();
+});
