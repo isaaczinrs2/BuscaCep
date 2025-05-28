@@ -46,7 +46,7 @@ Este projeto está licenciado sob a licença MIT - veja o arquivo [LICENSE](LICE
 
 ## 👥 Autores
 
-- **Isaac Amorim** - [GitHub](https://github.com/isaczinrs2)
+- **Isaac Amorim** - [GitHub](https://github.com/isaaczinrs2)
 - **Enrico Hidalgo** - [GitHub](https://github.com/enricohidalgo)
 
 ## 🙏 Agradecimentos
