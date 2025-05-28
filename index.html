@@ -3,54 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <script src="cep.js"></script>
-    <title>CEP</title>
-
+    <title>BuscaCEP - Encontre endereços facilmente</title>
 </head>
 <body>
     <header>
-        <h1>BuscaCep</h1>
+        <div class="header-content">
+            <h1><i class="fas fa-map-marker-alt"></i> BuscaCEP</h1>
+            <p>Encontre endereços e CEPs em todo o Brasil</p>
+        </div>
     </header>
-    <main>
-        <section class="pqs">
-            <p class="dcep">
-                Digite seu CEP
-            </p>
-            <label>
-                <input type="number" maxlength="8" minlength="1" id="CEP"/>
-            </label>
-            <label>
-                <input type="submit" id="env">
-            </label>
-            <div class="resultado">
-                <p id="resultado-cep">CEP: </p>
-            </div>
-        </section>
-        <section class="rst">
-           <div class="txt">
-            <p class="dend">
-                Digite seu endereço:
-            </p>
-                <label>Rua: <input type="text" id="rua"></label>
-                <label>Bairro: <input type="text" id="bairro"></label>
-                <label>Cidade: <input type="text" id="cid"></label>
-                <label>Estado: <input type="text" id="est"></label>
-           </div>
-           <label>
-            <input type="submit" id="env-endereco" value="Enviar">
-        </label>
-        </section>
-    </main>
-   
     
-    <div class="historico">
-        <h2>Histórico de Consultas</h2>
-        <ul id="historico-list">
-            <!-- Os CEPs pesquisados serão adicionados aqui -->
-        </ul>
-    </div>
-    <footer></footer>
+    <main>
+        <div class="container">
+            <section class="search-section">
+                <div class="search-box">
+                    <h2><i class="fas fa-search"></i> Buscar por CEP</h2>
+                    <div class="input-group">
+                        <input type="text" id="CEP" placeholder="Digite o CEP (apenas números)" maxlength="9">
+                        <button id="env" class="btn-primary">
+                            <i class="fas fa-search"></i> Buscar
+                        </button>
+                    </div>
+                    <div class="result-box">
+                        <p id="resultado-cep">CEP não informado</p>
+                        <button id="open-maps" class="btn-secondary" disabled>
+                            <i class="fas fa-map-marked-alt"></i> Ver no Mapa
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="search-box">
+                    <h2><i class="fas fa-route"></i> Buscar por Endereço</h2>
+                    <div class="address-form">
+                        <div class="form-group">
+                            <label for="rua">Rua:</label>
+                            <input type="text" id="rua" placeholder="Nome da rua">
+                        </div>
+                        <div class="form-group">
+                            <label for="bairro">Bairro:</label>
+                            <input type="text" id="bairro" placeholder="Nome do bairro">
+                        </div>
+                        <div class="form-group">
+                            <label for="cid">Cidade:</label>
+                            <input type="text" id="cid" placeholder="Nome da cidade">
+                        </div>
+                        <div class="form-group">
+                            <label for="est">Estado (UF):</label>
+                            <input type="text" id="est" placeholder="UF (ex: SP)" maxlength="2">
+                        </div>
+                        <button id="env-endereco" class="btn-primary">
+                            <i class="fas fa-search-location"></i> Buscar CEP
+                        </button>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="history-section">
+                <div class="history-header">
+                    <h2><i class="fas fa-history"></i> Histórico de Consultas</h2>
+                    <button id="clear-history" class="btn-danger">
+                        <i class="fas fa-trash"></i> Limpar
+                    </button>
+                </div>
+                <div class="history-content">
+                    <ul id="historico-list">
+                        <!-- Os CEPs pesquisados serão adicionados aqui -->
+                    </ul>
+                </div>
+            </section>
+        </div>
+    </main>
+    
+    <footer>
+        <div class="footer-content">
+            <p>BuscaCEP &copy; 2024</p>
+            <p>Dados fornecidos por ViaCEP</p>
+        </div>
+    </footer>
 
+    <script src="cep.js"></script>
 </body>
 </html>
