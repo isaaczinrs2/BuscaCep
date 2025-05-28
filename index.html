@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script src="cep.js"></script>
+    <title>CEP</title>
+
+</head>
+<body>
+    <header>
+        <h1>BuscaCep</h1>
+    </header>
+    <main>
+        <section class="pqs">
+            <p class="dcep">
+                Digite seu CEP
+            </p>
+            <label>
+                <input type="number" maxlength="8" minlength="1" id="CEP"/>
+            </label>
+            <label>
+                <input type="submit" id="env">
+            </label>
+            <div class="resultado">
+                <p id="resultado-cep">CEP: </p>
+            </div>
+        </section>
+        <section class="rst">
+           <div class="txt">
+            <p class="dend">
+                Digite seu endereço:
+            </p>
+                <label>Rua: <input type="text" id="rua"></label>
+                <label>Bairro: <input type="text" id="bairro"></label>
+                <label>Cidade: <input type="text" id="cid"></label>
+                <label>Estado: <input type="text" id="est"></label>
+           </div>
+           <label>
+            <input type="submit" id="env-endereco" value="Enviar">
+        </label>
+        </section>
+    </main>
+   
+    
+    <div class="historico">
+        <h2>Histórico de Consultas</h2>
+        <ul id="historico-list">
+            <!-- Os CEPs pesquisados serão adicionados aqui -->
+        </ul>
+    </div>
+    <footer></footer>
+
+</body>
+</html>

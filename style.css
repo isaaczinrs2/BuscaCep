@@ -1,0 +1,144 @@
+@import url('https://fonts.googleapis.com/css2?family=Dela+Gothic+One&display=swap');
+*{
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-family: "Dela Gothic One", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+header{
+    width: 100%;
+    height: 15vh;
+    background-color: #9fd480;
+    position: fixed;
+    color: #f8e74f;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+main{
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    background-color: #dddddd;
+    justify-content: space-around;
+    align-items: center;
+}
+footer{
+    width: 100%;
+    height: 3   5vh;
+    background-color: #9fd480;
+}
+section{
+    display: flex;
+    width: 35%;
+    height: 50vh;
+    border-radius: 5%;
+    background-color: #b9b9b9;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 5%;
+}
+
+#env:hover{
+    background-color: #6dca37;
+    transition: 0.2s;
+    cursor: pointer;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+-webkit-appearance: none;
+margin: 0;
+}
+#CEP{
+    width: 30vw;
+    height: 7vh;
+    border-radius: 10vh;
+    display: flex;
+    text-align: center;
+    font-size: 2.5em;
+    font-family: Arial, Helvetica, sans-serif;
+}
+#env{
+    width: 10vw;
+    height: 7vh;
+    border-radius: 7vh;
+    font-size: 1.5em;
+    background-color: #5fbe27
+}
+#env-endereco{
+    width: 10vw;
+    height: 7vh;
+    border-radius: 7vh;
+    font-size: 1.5em;
+    background-color: #5fbe27
+}
+
+#env-endereco:hover{
+    background-color: #6dca37;
+    transition: 0.2s;
+    cursor: pointer;
+}
+
+.dcep{
+    color: black;
+    font-size: 2.5em;
+    font-family: "Dela Gothic One", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+footer{
+    width: 100%;
+    height: 30vh;
+    background-color: #9fd480;
+}
+.txt{
+    width: 90%;
+    height: 75%;
+    border-radius: 5%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.txt label{
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 1.5em;
+}
+.dend{
+    font-size: 1.5em;
+    
+}
+
+.historico {
+    width: 100%;
+    margin-top: 20px;
+    background-color: #f1f1f1;
+    border-radius: 5%;
+    padding: 10px;
+}
+
+.historico h2 {
+    font-size: 1.8em;
+    text-align: center;
+}
+
+#historico-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+#historico-list li {
+    margin: 10px 0;
+    cursor: pointer;
+    font-size: 1.5em;
+    color: #52ac1f;
+}
+
+#historico-list li:hover {
+    text-decoration: underline;
+    color: #2d6e08;
+}
