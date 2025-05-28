@@ -25,7 +25,7 @@ O BuscaCEP é uma aplicação web que permite consultar endereços completos a p
 
 ## 🚀 Como Usar
 
-1. Acesse a aplicação [link do seu site]
+1. Acesse a aplicação isaaczinrs2.github.io/BuscaCep/
 2. Para buscar por CEP:
    - Digite o CEP no campo indicado (formato 00000-000)
    - Clique em "Buscar"
@@ -37,10 +37,7 @@ O BuscaCEP é uma aplicação web que permite consultar endereços completos a p
 
 ## 📦 Instalação Local
 
-1. Clone o repositório:
-   ```bash
-   git clone [URL do repositório]
-   ```
+1. Clone o repositório
 2. Abra o arquivo `index.html` no seu navegador
 
 ## 📜 Licença
